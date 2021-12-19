@@ -15,7 +15,7 @@ namespace APIGlobal.Controllers
             if (nome.Length >= 1 && cpf.Length == 11 && uf.Length == 2 && data.Length == 8)
             {
                 if (pessoas.FindAll(x => x.Cpf == cpf).Count == 0)
-                { 
+                {
                     return true;
                 }
             }
@@ -49,7 +49,7 @@ namespace APIGlobal.Controllers
                 if (pessoas.Count > 0)
                 {
                     Pessoa ultimaPessoa = pessoas.Last();
-                    codigoNovo = ultimaPessoa.Codigo+1;
+                    codigoNovo = ultimaPessoa.Codigo + 1;
                 }
 
                 Pessoa pessoa = new Pessoa(codigoNovo, nome, cpf, uf, data);
@@ -59,16 +59,15 @@ namespace APIGlobal.Controllers
             return null;
         }
 
-        [HttpPost("atualizar-pessoa/{nome}/{cpf}/{uf}/{data}")]
-        public Pessoa atualizarPessoa([FromRoute] Pessoa request)
+        [HttpPost("atualizar-pessoa/{codigo}/{nome}/{cpf}/{uf}/{data}")]
+        public Pessoa atualizarPessoa([FromRoute] int codigo, [FromRoute] string nome, [FromRoute] string cpf, [FromRoute] string uf, [FromRoute] string data)
         {
-            if (tratamentoDeDadosSimples(request.Nome, request.Cpf, request.Uf, request.DataDeNascimento))
+            if (tratamentoDeDadosSimples(nome, cpf, uf, data))
             {
-                Pessoa pessoaAtualizada = pessoas.Find(x => x.Codigo == request.Codigo);
-                if (pessoaAtualizada != null)
+                if (pessoas.Find(x => x.Codigo == codigo) != null)
                 {
-                    pessoas[request.Codigo] = pessoaAtualizada;
-                    return pessoaAtualizada;
+                    pessoas[codigo - 1] = new Pessoa(codigo, nome, cpf, uf, data);
+                    return pessoas[codigo - 1];
                 }
             }
             return null;
